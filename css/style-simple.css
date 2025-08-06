@@ -78,19 +78,23 @@ img { max-width: 100%; height: auto; }
     position: fixed;
     top: 0;
     width: 100%;
-    background: rgba(255,255,255,0.95);
+    background: rgba(255,255,255,0.98);
     backdrop-filter: blur(10px);
     z-index: 1000;
     border-bottom: 1px solid #eee;
     left: 0;
     right: 0;
+    height: 70px;
 }
 
 .navbar { 
-    padding: 0.8rem 0; 
+    padding: 0.5rem 0; 
     width: 100%;
     max-width: 100%;
     overflow: hidden;
+    height: 100%;
+    display: flex;
+    align-items: center;
 }
 
 .nav-container {
@@ -109,7 +113,7 @@ img { max-width: 100%; height: auto; }
 }
 
 .nav-logo h1 {
-    font-size: 1.3rem;
+    font-size: 1.1rem;
     color: var(--primary);
     line-height: 1;
     margin: 0;
@@ -119,9 +123,10 @@ img { max-width: 100%; height: auto; }
 }
 
 .nav-logo .tagline {
-    font-size: 0.7rem;
+    font-size: 0.6rem;
     color: var(--gray);
     margin: 0;
+    line-height: 1;
 }
 
 /* Mobile menu */
@@ -214,12 +219,13 @@ img { max-width: 100%; height: auto; }
 /* Hero */
 .hero {
     min-height: 100vh;
-    padding: 80px 15px 40px;
+    padding: 20px 15px 40px;
     background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
     display: flex;
     align-items: center;
     width: 100%;
-    margin-top: 60px;
+    margin-top: 0;
+    padding-top: 100px;
     box-sizing: border-box;
 }
 
@@ -233,7 +239,7 @@ img { max-width: 100%; height: auto; }
 
 .hero-title {
     font-family: 'Playfair Display', serif;
-    font-size: 2.2rem;
+    font-size: 1.8rem;
     font-weight: 700;
     color: var(--dark);
     margin-bottom: 1rem;
@@ -241,17 +247,18 @@ img { max-width: 100%; height: auto; }
 }
 
 .hero-subtitle {
-    font-size: 1.3rem;
+    font-size: 1.1rem;
     color: var(--primary);
     font-weight: 600;
     margin-bottom: 1rem;
 }
 
 .hero-description {
-    font-size: 1rem;
+    font-size: 0.9rem;
     color: var(--gray);
     margin-bottom: 2rem;
     line-height: 1.6;
+    padding: 0 10px;
 }
 
 .hero-buttons {
@@ -262,8 +269,15 @@ img { max-width: 100%; height: auto; }
     margin-bottom: 2rem;
 }
 
+.hero-image {
+    margin-top: 2rem;
+    text-align: center;
+}
+
 .hero-image img {
-    max-width: 400px;
+    max-width: 300px;
+    width: 100%;
+    height: auto;
     border-radius: 15px;
     box-shadow: 0 15px 30px rgba(0,0,0,0.1);
 }
@@ -272,19 +286,24 @@ img { max-width: 100%; height: auto; }
 .about {
     padding: 60px 0;
     background: var(--white);
+    margin-top: 0;
+    clear: both;
 }
 
-.about-content { text-align: center; }
+.about-content { 
+    text-align: center;
+    padding: 0 15px;
+}
 
 .section-title {
     font-family: 'Playfair Display', serif;
-    font-size: 2rem;
+    font-size: 1.8rem;
     color: var(--dark);
     margin-bottom: 1rem;
 }
 
 .section-subtitle {
-    font-size: 1.3rem;
+    font-size: 1.1rem;
     color: var(--primary);
     font-weight: 600;
     margin-bottom: 1.5rem;
@@ -326,6 +345,8 @@ img { max-width: 100%; height: auto; }
 .menu-preview {
     padding: 60px 0;
     background: var(--light);
+    margin-top: 0;
+    clear: both;
 }
 
 .menu-categories {
@@ -375,6 +396,8 @@ img { max-width: 100%; height: auto; }
 .events {
     padding: 60px 0;
     background: var(--white);
+    margin-top: 0;
+    clear: both;
 }
 
 .events-grid {
@@ -403,6 +426,8 @@ img { max-width: 100%; height: auto; }
 .contact {
     padding: 60px 0;
     background: var(--light);
+    margin-top: 0;
+    clear: both;
 }
 
 .contact-content {
@@ -525,15 +550,21 @@ img { max-width: 100%; height: auto; }
         padding: 0;
         gap: 2rem;
         left: 0;
+        min-height: auto;
     }
     
     .nav-buttons {
         position: static;
         transform: none;
+        margin-right: 0;
     }
     
     .nav-buttons a.btn { display: inline-block; }
     .hamburger { display: none; }
+    
+    .hero {
+        padding-top: 120px;
+    }
     
     .hero-content {
         display: grid;
@@ -543,14 +574,40 @@ img { max-width: 100%; height: auto; }
         align-items: center;
     }
     
-    .hero-title { font-size: 3.5rem; }
-    .hero-buttons { flex-direction: row; justify-content: flex-start; }
+    .hero-title { 
+        font-size: 3.5rem; 
+    }
+    
+    .hero-subtitle {
+        font-size: 1.5rem;
+    }
+    
+    .hero-description {
+        font-size: 1.1rem;
+    }
+    
+    .hero-buttons { 
+        flex-direction: row; 
+        justify-content: flex-start; 
+    }
+    
+    .hero-image img {
+        max-width: 500px;
+    }
     
     .about-content {
         display: grid;
         grid-template-columns: 1fr 1fr;
         gap: 4rem;
         text-align: left;
+    }
+    
+    .section-title {
+        font-size: 2.5rem;
+    }
+    
+    .section-subtitle {
+        font-size: 1.4rem;
     }
     
     .about-features { grid-template-columns: repeat(3, 1fr); }
