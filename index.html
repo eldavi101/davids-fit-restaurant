@@ -1,0 +1,435 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>David's Fit Restaurant - Comida Saludable y Deliciosa</title>
+    <meta name="description" content="Restaurante de comida saludable en el corazón de la ciudad. Platos nutritivos, frescos y deliciosos para una vida más saludable.">
+    
+    <!-- Fonts -->
+    <link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;700&family=Open+Sans:wght@300;400;600;700&display=swap" rel="stylesheet">
+    
+    <!-- Font Awesome -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css">
+    
+    <!-- CSS -->
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <!-- Header -->
+    <header class="header">
+        <nav class="navbar">
+            <div class="nav-container">
+                <div class="nav-logo">
+                    <h1>David's Fit Restaurant</h1>
+                    <span class="tagline">Healthy • Fresh • Delicious</span>
+                </div>
+                
+                <ul class="nav-menu">
+                    <li class="nav-item">
+                        <a href="#home" class="nav-link">Inicio</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#about" class="nav-link">Nosotros</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#menu" class="nav-link">Menú</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#events" class="nav-link">Eventos</a>
+                    </li>
+                    <li class="nav-item">
+                        <a href="#contact" class="nav-link">Contacto</a>
+                    </li>
+                </ul>
+                
+                <div class="nav-buttons">
+                    <a href="#menu" class="btn btn-primary">Ver Menú</a>
+                    <a href="#contact" class="btn btn-secondary">Reservar</a>
+                </div>
+                
+                <div class="hamburger">
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                    <span class="bar"></span>
+                </div>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Hero Section -->
+    <section id="home" class="hero">
+        <div class="hero-content">
+            <h1 class="hero-title">Bienvenido a David's Fit Restaurant</h1>
+            <h2 class="hero-subtitle">Donde la comida saludable se encuentra con el sabor extraordinario</h2>
+            <p class="hero-description">
+                Descubre nuestra selección de platos nutritivos, preparados con ingredientes frescos y orgánicos 
+                para nutrir tu cuerpo y deleitar tu paladar.
+            </p>
+            <div class="hero-buttons">
+                <a href="#menu" class="btn btn-primary btn-large">Explorar Menú</a>
+                <a href="#about" class="btn btn-outline btn-large">Conoce Más</a>
+            </div>
+        </div>
+        <div class="hero-image">
+            <img src="https://images.unsplash.com/photo-1512621776951-a57141f2eefd?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Bowl de comida saludable con vegetales frescos">
+        </div>
+    </section>
+
+    <!-- About Section -->
+    <section id="about" class="about">
+        <div class="container">
+            <div class="about-content">
+                <div class="about-text">
+                    <h2 class="section-title">Nuestra Historia</h2>
+                    <h3 class="section-subtitle">Pasión por la Comida Saludable</h3>
+                    <p>
+                        En David's Fit Restaurant, creemos que comer saludable no significa sacrificar el sabor. 
+                        Fundado con la visión de ofrecer comida nutritiva y deliciosa, nuestro restaurante se ha 
+                        convertido en el destino favorito para quienes buscan una experiencia culinaria saludable.
+                    </p>
+                    <p>
+                        Utilizamos únicamente ingredientes frescos, orgánicos y de temporada, trabajando con 
+                        productores locales para garantizar la máxima calidad y frescura en cada plato. Nuestro 
+                        equipo de chefs especializados en cocina saludable crea menús balanceados que satisfacen 
+                        tanto el paladar como las necesidades nutricionales.
+                    </p>
+                    <div class="about-features">
+                        <div class="feature">
+                            <i class="fas fa-leaf"></i>
+                            <h4>Ingredientes Orgánicos</h4>
+                            <p>Solo utilizamos productos orgánicos certificados</p>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-heart"></i>
+                            <h4>Nutricionalmente Balanceado</h4>
+                            <p>Cada plato está diseñado por nutricionistas</p>
+                        </div>
+                        <div class="feature">
+                            <i class="fas fa-utensils"></i>
+                            <h4>Sabor Excepcional</h4>
+                            <p>Comida saludable que realmente sabe deliciosa</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="about-image">
+                    <img src="https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D&auto=format&fit=crop&w=2070&q=80" alt="Chef preparando comida saludable">
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Menu Preview Section -->
+    <section id="menu" class="menu-preview">
+        <div class="container">
+            <h2 class="section-title">Nuestro Menú Saludable</h2>
+            <h3 class="section-subtitle">Platos Nutritivos y Deliciosos</h3>
+            
+            <div class="menu-categories">
+                <div class="menu-category">
+                    <div class="category-header">
+                        <i class="fas fa-seedling"></i>
+                        <h3>Bowls Energéticos</h3>
+                    </div>
+                    <div class="menu-items">
+                        <div class="menu-item">
+                            <div class="item-info">
+                                <h4>Power Bowl Verde</h4>
+                                <p>Quinoa, espinaca, aguacate, edamame, semillas de chía</p>
+                            </div>
+                            <span class="price">$14.99</span>
+                        </div>
+                        <div class="menu-item">
+                            <div class="item-info">
+                                <h4>Bowl Mediterráneo</h4>
+                                <p>Farro, hummus, vegetales asados, aceitunas, queso feta</p>
+                            </div>
+                            <span class="price">$16.99</span>
+                        </div>
+                        <div class="menu-item">
+                            <div class="item-info">
+                                <h4>Bowl Proteico</h4>
+                                <p>Pollo orgánico, brócoli, camote, almendras, tahini</p>
+                            </div>
+                            <span class="price">$18.99</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu-category">
+                    <div class="category-header">
+                        <i class="fas fa-fish"></i>
+                        <h3>Proteínas Magras</h3>
+                    </div>
+                    <div class="menu-items">
+                        <div class="menu-item">
+                            <div class="item-info">
+                                <h4>Salmón Teriyaki</h4>
+                                <p>Salmón salvaje, salsa teriyaki casera, vegetales al vapor</p>
+                            </div>
+                            <span class="price">$24.99</span>
+                        </div>
+                        <div class="menu-item">
+                            <div class="item-info">
+                                <h4>Pechuga de Pollo Herbs</h4>
+                                <p>Pollo orgánico, hierbas frescas, quinoa, ensalada mixta</p>
+                            </div>
+                            <span class="price">$21.99</span>
+                        </div>
+                        <div class="menu-item">
+                            <div class="item-info">
+                                <h4>Tofu Marinado</h4>
+                                <p>Tofu orgánico, marinado en miso, vegetales asiáticos</p>
+                            </div>
+                            <span class="price">$19.99</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="menu-category">
+                    <div class="category-header">
+                        <i class="fas fa-blender"></i>
+                        <h3>Smoothies & Jugos</h3>
+                    </div>
+                    <div class="menu-items">
+                        <div class="menu-item">
+                            <div class="item-info">
+                                <h4>Green Machine</h4>
+                                <p>Espinaca, manzana verde, apio, limón, jengibre</p>
+                            </div>
+                            <span class="price">$8.99</span>
+                        </div>
+                        <div class="menu-item">
+                            <div class="item-info">
+                                <h4>Tropical Power</h4>
+                                <p>Mango, piña, coco, proteína vegetal, semillas de hemp</p>
+                            </div>
+                            <span class="price">$9.99</span>
+                        </div>
+                        <div class="menu-item">
+                            <div class="item-info">
+                                <h4>Antioxidant Boost</h4>
+                                <p>Arándanos, açaí, plátano, almendras, miel de agave</p>
+                            </div>
+                            <span class="price">$10.99</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="menu-cta">
+                <a href="#contact" class="btn btn-primary btn-large">Ver Menú Completo</a>
+            </div>
+        </div>
+    </section>
+
+    <!-- Events Section -->
+    <section id="events" class="events">
+        <div class="container">
+            <h2 class="section-title">Eventos Wellness</h2>
+            <h3 class="section-subtitle">Experiencias para tu Bienestar</h3>
+            
+            <div class="events-grid">
+                <div class="event-card">
+                    <div class="event-date">
+                        <span class="day">15</span>
+                        <span class="month">AGO</span>
+                    </div>
+                    <div class="event-content">
+                        <h4>Taller de Cocina Saludable</h4>
+                        <p>Aprende a preparar deliciosos platos nutritivos con nuestro chef. Incluye degustación y recetas para llevar.</p>
+                        <div class="event-time">
+                            <i class="fas fa-clock"></i>
+                            <span>7:00 PM - 9:00 PM</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="event-card">
+                    <div class="event-date">
+                        <span class="day">22</span>
+                        <span class="month">AGO</span>
+                    </div>
+                    <div class="event-content">
+                        <h4>Yoga & Brunch Saludable</h4>
+                        <p>Sesión de yoga matutina seguida de un brunch nutritivo. Perfecto para comenzar el día con energía.</p>
+                        <div class="event-time">
+                            <i class="fas fa-clock"></i>
+                            <span>9:00 AM - 12:00 PM</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="event-card">
+                    <div class="event-date">
+                        <span class="day">29</span>
+                        <span class="month">AGO</span>
+                    </div>
+                    <div class="event-content">
+                        <h4>Charla de Nutrición</h4>
+                        <p>Conferencia con nutricionista certificada sobre alimentación consciente y hábitos saludables.</p>
+                        <div class="event-time">
+                            <i class="fas fa-clock"></i>
+                            <span>6:30 PM - 8:00 PM</span>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section id="contact" class="contact">
+        <div class="container">
+            <div class="contact-content">
+                <div class="contact-info">
+                    <h2 class="section-title">Contáctanos</h2>
+                    <h3 class="section-subtitle">Te esperamos en David's Fit</h3>
+                    
+                    <div class="contact-details">
+                        <div class="contact-item">
+                            <i class="fas fa-map-marker-alt"></i>
+                            <div>
+                                <h4>Dirección</h4>
+                                <p>3535 West 10th Ave<br>Hialeah, FL 33012</p>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-item">
+                            <i class="fas fa-phone"></i>
+                            <div>
+                                <h4>Teléfono</h4>
+                                <p>(786) 992-6153</p>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-item">
+                            <i class="fas fa-envelope"></i>
+                            <div>
+                                <h4>Email</h4>
+                                <p>machindavid2@gmail.com</p>
+                            </div>
+                        </div>
+                        
+                        <div class="contact-item">
+                            <i class="fas fa-clock"></i>
+                            <div>
+                                <h4>Horarios</h4>
+                                <p>Lun - Dom: 7:00 AM - 10:00 PM</p>
+                            </div>
+                        </div>
+                    </div>
+                    
+                    <div class="social-links">
+                        <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                        <a href="https://wa.me/17869926153" target="_blank" class="social-link"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+                
+                <div class="contact-form">
+                    <h3>Haz tu Reserva</h3>
+                    <form id="reservationForm">
+                        <div class="form-group">
+                            <input type="text" id="name" name="name" placeholder="Nombre completo" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="email" id="email" name="email" placeholder="Email" required>
+                        </div>
+                        <div class="form-group">
+                            <input type="tel" id="phone" name="phone" placeholder="Teléfono" required>
+                        </div>
+                        <div class="form-row">
+                            <div class="form-group">
+                                <input type="date" id="date" name="date" required>
+                            </div>
+                            <div class="form-group">
+                                <select id="time" name="time" required>
+                                    <option value="">Hora</option>
+                                    <option value="7:00">7:00 AM</option>
+                                    <option value="8:00">8:00 AM</option>
+                                    <option value="12:00">12:00 PM</option>
+                                    <option value="1:00">1:00 PM</option>
+                                    <option value="7:00">7:00 PM</option>
+                                    <option value="8:00">8:00 PM</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="form-group">
+                            <select id="guests" name="guests" required>
+                                <option value="">Número de personas</option>
+                                <option value="1">1 persona</option>
+                                <option value="2">2 personas</option>
+                                <option value="3">3 personas</option>
+                                <option value="4">4 personas</option>
+                                <option value="5+">5+ personas</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <textarea id="message" name="message" placeholder="Comentarios especiales o restricciones alimentarias" rows="4"></textarea>
+                        </div>
+                        <button type="submit" class="btn btn-primary btn-full">Hacer Reserva</button>
+                    </form>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="footer">
+        <div class="container">
+            <div class="footer-content">
+                <div class="footer-section">
+                    <h3>David's Fit Restaurant</h3>
+                    <p>Comida saludable que nutre el cuerpo y el alma. Ven y descubre una nueva forma de disfrutar la alimentación consciente.</p>
+                    <div class="footer-social">
+                        <a href="#" class="social-link"><i class="fab fa-instagram"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-facebook"></i></a>
+                        <a href="#" class="social-link"><i class="fab fa-twitter"></i></a>
+                        <a href="https://wa.me/17869926153" target="_blank" class="social-link"><i class="fab fa-whatsapp"></i></a>
+                    </div>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Enlaces Rápidos</h4>
+                    <ul class="footer-links">
+                        <li><a href="#home">Inicio</a></li>
+                        <li><a href="#about">Nosotros</a></li>
+                        <li><a href="#menu">Menú</a></li>
+                        <li><a href="#events">Eventos</a></li>
+                        <li><a href="#contact">Contacto</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Información</h4>
+                    <ul class="footer-links">
+                        <li><a href="#">Política de Privacidad</a></li>
+                        <li><a href="#">Términos y Condiciones</a></li>
+                        <li><a href="#">Programa de Lealtad</a></li>
+                        <li><a href="#">Delivery</a></li>
+                        <li><a href="#">Catering</a></li>
+                    </ul>
+                </div>
+                
+                <div class="footer-section">
+                    <h4>Newsletter</h4>
+                    <p>Suscríbete para recibir recetas saludables y promociones especiales.</p>
+                    <form class="newsletter-form">
+                        <input type="email" placeholder="Tu email" required>
+                        <button type="submit" class="btn btn-primary">Suscribirse</button>
+                    </form>
+                </div>
+            </div>
+            
+            <div class="footer-bottom">
+                <p>&copy; 2025 David's Fit Restaurant. Todos los derechos reservados.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- JavaScript -->
+    <script src="js/script.js"></script>
+</body>
+</html>
