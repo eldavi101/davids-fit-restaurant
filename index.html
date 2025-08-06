@@ -82,25 +82,31 @@
                 
                 <ul class="nav-menu">
                     <li class="nav-item">
-                        <a href="#home" class="nav-link">Inicio</a>
+                        <a href="#home" class="nav-link" data-translate="nav-home">Inicio</a>
                     </li>
                     <li class="nav-item">
-                        <a href="#about" class="nav-link">Nosotros</a>
+                        <a href="#about" class="nav-link" data-translate="nav-about">Nosotros</a>
                     </li>
                     <li class="nav-item">
-                        <a href="#menu" class="nav-link">Menú</a>
+                        <a href="#menu" class="nav-link" data-translate="nav-menu">Menú</a>
                     </li>
                     <li class="nav-item">
-                        <a href="#events" class="nav-link">Eventos</a>
+                        <a href="#events" class="nav-link" data-translate="nav-events">Eventos</a>
                     </li>
                     <li class="nav-item">
-                        <a href="#contact" class="nav-link">Contacto</a>
+                        <a href="#contact" class="nav-link" data-translate="nav-contact">Contacto</a>
                     </li>
                 </ul>
                 
                 <div class="nav-buttons">
-                    <a href="#menu" class="btn btn-primary">Ver Menú</a>
-                    <a href="#contact" class="btn btn-secondary">Reservar</a>
+                    <div class="language-selector">
+                        <button id="languageToggle" class="btn btn-language">
+                            <i class="fas fa-globe"></i>
+                            <span id="currentLang">ES</span>
+                        </button>
+                    </div>
+                    <a href="#menu" class="btn btn-primary" data-translate="nav-menu-btn">Ver Menú</a>
+                    <a href="#contact" class="btn btn-secondary" data-translate="nav-reservation-btn">Reservar</a>
                 </div>
                 
                 <div class="hamburger">
@@ -115,15 +121,15 @@
     <!-- Hero Section -->
     <section id="home" class="hero">
         <div class="hero-content">
-            <h1 class="hero-title">Bienvenido a David's Fit Restaurant</h1>
-            <h2 class="hero-subtitle">Donde la comida saludable se encuentra con el sabor extraordinario</h2>
-            <p class="hero-description">
+            <h1 class="hero-title" data-translate="hero-title">Bienvenido a David's Fit Restaurant</h1>
+            <h2 class="hero-subtitle" data-translate="hero-subtitle">Donde la comida saludable se encuentra con el sabor extraordinario</h2>
+            <p class="hero-description" data-translate="hero-description">
                 Descubre nuestra selección de platos nutritivos, preparados con ingredientes frescos y orgánicos 
                 para nutrir tu cuerpo y deleitar tu paladar.
             </p>
             <div class="hero-buttons">
-                <a href="#menu" class="btn btn-primary btn-large">Explorar Menú</a>
-                <a href="#about" class="btn btn-outline btn-large">Conoce Más</a>
+                <a href="#menu" class="btn btn-primary btn-large" data-translate="hero-menu">Explorar Menú</a>
+                <a href="#about" class="btn btn-outline btn-large" data-translate="hero-about">Conoce Más</a>
             </div>
         </div>
         <div class="hero-image">
@@ -140,14 +146,14 @@
         <div class="container">
             <div class="about-content">
                 <div class="about-text">
-                    <h2 class="section-title">Nuestra Historia</h2>
-                    <h3 class="section-subtitle">Pasión por la Comida Saludable</h3>
-                    <p>
+                    <h2 class="section-title" data-translate="about-title">Nuestra Historia</h2>
+                    <h3 class="section-subtitle" data-translate="about-subtitle">Pasión por la Comida Saludable</h3>
+                    <p data-translate="about-p1">
                         En David's Fit Restaurant, creemos que comer saludable no significa sacrificar el sabor. 
                         Fundado con la visión de ofrecer comida nutritiva y deliciosa, nuestro restaurante se ha 
                         convertido en el destino favorito para quienes buscan una experiencia culinaria saludable.
                     </p>
-                    <p>
+                    <p data-translate="about-p2">
                         Utilizamos únicamente ingredientes frescos, orgánicos y de temporada, trabajando con 
                         productores locales para garantizar la máxima calidad y frescura en cada plato. Nuestro 
                         equipo de chefs especializados en cocina saludable crea menús balanceados que satisfacen 
@@ -156,18 +162,18 @@
                     <div class="about-features">
                         <div class="feature">
                             <i class="fas fa-leaf"></i>
-                            <h4>Ingredientes Orgánicos</h4>
-                            <p>Solo utilizamos productos orgánicos certificados</p>
+                            <h4 data-translate="feature1-title">Ingredientes Orgánicos</h4>
+                            <p data-translate="feature1-desc">Solo utilizamos productos orgánicos certificados</p>
                         </div>
                         <div class="feature">
                             <i class="fas fa-heart"></i>
-                            <h4>Nutricionalmente Balanceado</h4>
-                            <p>Cada plato está diseñado por nutricionistas</p>
+                            <h4 data-translate="feature2-title">Nutricionalmente Balanceado</h4>
+                            <p data-translate="feature2-desc">Cada plato está diseñado por nutricionistas</p>
                         </div>
                         <div class="feature">
                             <i class="fas fa-utensils"></i>
-                            <h4>Sabor Excepcional</h4>
-                            <p>Comida saludable que realmente sabe deliciosa</p>
+                            <h4 data-translate="feature3-title">Sabor Excepcional</h4>
+                            <p data-translate="feature3-desc">Comida saludable que realmente sabe deliciosa</p>
                         </div>
                     </div>
                 </div>

@@ -140,7 +140,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .navbar {
-    padding: 1rem 0;
+    padding: 0.8rem 0;
 }
 
 .nav-container {
@@ -153,13 +153,13 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .nav-logo h1 {
-    font-size: 1.8rem;
+    font-size: clamp(1.2rem, 4vw, 1.8rem);
     color: var(--primary-color);
     margin-bottom: 0.2rem;
 }
 
 .nav-logo .tagline {
-    font-size: 0.8rem;
+    font-size: clamp(0.6rem, 2vw, 0.8rem);
     color: var(--text-light);
     font-weight: 400;
 }
@@ -216,12 +216,77 @@ h1, h2, h3, h4, h5, h6 {
     transition: var(--transition);
 }
 
+/* Language Selector */
+.language-selector {
+    margin-right: 1rem;
+}
+
+.btn-language {
+    background: rgba(52, 152, 219, 0.1);
+    color: var(--primary-color);
+    border: 1px solid rgba(52, 152, 219, 0.3);
+    padding: 0.5rem 0.8rem;
+    border-radius: 6px;
+    font-size: 0.85rem;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    gap: 0.4rem;
+    transition: all 0.3s ease;
+    cursor: pointer;
+}
+
+.btn-language:hover {
+    background: rgba(52, 152, 219, 0.15);
+    border-color: var(--primary-color);
+    transform: translateY(-1px);
+}
+
+.btn-language i {
+    font-size: 0.9rem;
+}
+
+#currentLang {
+    font-weight: 600;
+    font-size: 0.8rem;
+}
+
+/* Responsive adjustments for language button */
+@media (max-width: 768px) {
+    .language-selector {
+        margin-right: 0.5rem;
+    }
+    
+    .btn-language {
+        padding: 0.4rem 0.6rem;
+        font-size: 0.8rem;
+    }
+    
+    .btn-language i {
+        font-size: 0.85rem;
+    }
+    
+    #currentLang {
+        font-size: 0.75rem;
+    }
+}
+
+@media (max-width: 480px) {
+    .nav-buttons {
+        gap: 0.3rem;
+    }
+    
+    .btn-language {
+        padding: 0.35rem 0.5rem;
+    }
+}
+
 /* Hero Section */
 .hero {
     min-height: 100vh;
     display: flex;
     align-items: center;
-    padding: 100px 20px 50px;
+    padding: 120px 20px 80px;
     background: linear-gradient(135deg, #f5f7fa 0%, #c3cfe2 100%);
 }
 
@@ -273,6 +338,7 @@ h1, h2, h3, h4, h5, h6 {
 .about {
     padding: 100px 0;
     background: var(--white);
+    margin-top: 50px;
 }
 
 .about-content {

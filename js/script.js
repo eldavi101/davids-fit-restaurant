@@ -8,7 +8,112 @@ document.addEventListener('DOMContentLoaded', function() {
     initNewsletterForm();
     initHeaderScroll();
     initActiveNavLinks();
+    initLanguageToggle();
 });
+
+// Language Toggle Functionality
+let currentLanguage = 'es'; // Default to Spanish
+
+const translations = {
+    es: {
+        // Navigation
+        'nav-home': 'Inicio',
+        'nav-about': 'Nosotros',
+        'nav-menu': 'Menú',
+        'nav-events': 'Eventos',
+        'nav-contact': 'Contacto',
+        'nav-menu-btn': 'Ver Menú',
+        'nav-reservation-btn': 'Reservar',
+        
+        // Hero Section
+        'hero-title': 'Bienvenido a David\'s Fit Restaurant',
+        'hero-subtitle': 'Donde la comida saludable se encuentra con el sabor extraordinario',
+        'hero-description': 'Descubre nuestra selección de platos nutritivos, preparados con ingredientes frescos y orgánicos para nutrir tu cuerpo y deleitar tu paladar.',
+        'hero-menu': 'Explorar Menú',
+        'hero-about': 'Conoce Más',
+        
+        // About Section
+        'about-title': 'Nuestra Historia',
+        'about-subtitle': 'Pasión por la Comida Saludable',
+        'about-p1': 'En David\'s Fit Restaurant, creemos que comer saludable no significa sacrificar el sabor. Fundado con la visión de ofrecer comida nutritiva y deliciosa, nuestro restaurante se ha convertido en el destino favorito para quienes buscan una experiencia culinaria saludable.',
+        'about-p2': 'Utilizamos únicamente ingredientes frescos, orgánicos y de temporada, trabajando con productores locales para garantizar la máxima calidad y frescura en cada plato. Nuestro equipo de chefs especializados en cocina saludable crea menús balanceados que satisfacen tanto el paladar como las necesidades nutricionales.',
+        'feature1-title': 'Ingredientes Orgánicos',
+        'feature1-desc': 'Solo utilizamos productos orgánicos certificados',
+        'feature2-title': 'Nutricionalmente Balanceado',
+        'feature2-desc': 'Cada plato está diseñado por nutricionistas',
+        'feature3-title': 'Sabor Excepcional',
+        'feature3-desc': 'Comida saludable que realmente sabe deliciosa'
+    },
+    en: {
+        // Navigation
+        'nav-home': 'Home',
+        'nav-about': 'About',
+        'nav-menu': 'Menu',
+        'nav-events': 'Events',
+        'nav-contact': 'Contact',
+        'nav-menu-btn': 'View Menu',
+        'nav-reservation-btn': 'Reserve',
+        
+        // Hero Section
+        'hero-title': 'Welcome to David\'s Fit Restaurant',
+        'hero-subtitle': 'Where healthy food meets extraordinary flavor',
+        'hero-description': 'Discover our selection of nutritious dishes, prepared with fresh and organic ingredients to nourish your body and delight your palate.',
+        'hero-menu': 'Explore Menu',
+        'hero-about': 'Learn More',
+        
+        // About Section
+        'about-title': 'Our Story',
+        'about-subtitle': 'Passion for Healthy Food',
+        'about-p1': 'At David\'s Fit Restaurant, we believe that eating healthy doesn\'t mean sacrificing flavor. Founded with the vision of offering nutritious and delicious food, our restaurant has become the favorite destination for those seeking a healthy culinary experience.',
+        'about-p2': 'We use only fresh, organic, and seasonal ingredients, working with local producers to guarantee maximum quality and freshness in every dish. Our team of chefs specialized in healthy cuisine creates balanced menus that satisfy both the palate and nutritional needs.',
+        'feature1-title': 'Organic Ingredients',
+        'feature1-desc': 'We only use certified organic products',
+        'feature2-title': 'Nutritionally Balanced',
+        'feature2-desc': 'Every dish is designed by nutritionists',
+        'feature3-title': 'Exceptional Flavor',
+        'feature3-desc': 'Healthy food that actually tastes delicious'
+    }
+};
+
+function initLanguageToggle() {
+    const languageToggle = document.getElementById('languageToggle');
+    const currentLangSpan = document.getElementById('currentLang');
+    
+    if (languageToggle) {
+        languageToggle.addEventListener('click', function() {
+            // Toggle language
+            currentLanguage = currentLanguage === 'es' ? 'en' : 'es';
+            
+            // Update current language display
+            currentLangSpan.textContent = currentLanguage.toUpperCase();
+            
+            // Update all translatable elements
+            updateTranslations();
+            
+            // Store preference in localStorage
+            localStorage.setItem('preferred-language', currentLanguage);
+        });
+    }
+    
+    // Load saved language preference
+    const savedLanguage = localStorage.getItem('preferred-language');
+    if (savedLanguage && savedLanguage !== currentLanguage) {
+        currentLanguage = savedLanguage;
+        currentLangSpan.textContent = currentLanguage.toUpperCase();
+        updateTranslations();
+    }
+}
+
+function updateTranslations() {
+    const elementsToTranslate = document.querySelectorAll('[data-translate]');
+    
+    elementsToTranslate.forEach(element => {
+        const key = element.getAttribute('data-translate');
+        if (translations[currentLanguage] && translations[currentLanguage][key]) {
+            element.textContent = translations[currentLanguage][key];
+        }
+    });
+}
 
 // Mobile Menu Toggle
 function initMobileMenu() {
