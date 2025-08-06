@@ -1,4 +1,4 @@
-/* Reset and Base Styles */
+/* Base Styles with Mobile-First Approach */
 * {
     margin: 0;
     padding: 0;
@@ -24,12 +24,29 @@ body {
     line-height: 1.6;
     color: var(--text-dark);
     overflow-x: hidden;
+    font-size: 16px;
+}
+
+img {
+    max-width: 100%;
+    height: auto;
 }
 
 .container {
     max-width: 1200px;
     margin: 0 auto;
     padding: 0 20px;
+}
+
+/* Ensure text is readable on all devices */
+@media (max-width: 320px) {
+    .container {
+        padding: 0 10px;
+    }
+    
+    body {
+        font-size: 14px;
+    }
 }
 
 /* Typography */
@@ -40,14 +57,14 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .section-title {
-    font-size: 2.5rem;
+    font-size: clamp(1.8rem, 4vw, 2.5rem);
     color: var(--dark-color);
     text-align: center;
     margin-bottom: 1rem;
 }
 
 .section-subtitle {
-    font-size: 1.2rem;
+    font-size: clamp(1rem, 2.5vw, 1.2rem);
     color: var(--text-light);
     text-align: center;
     margin-bottom: 3rem;
@@ -218,21 +235,21 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .hero-title {
-    font-size: 3.5rem;
+    font-size: clamp(2rem, 5vw, 3.5rem);
     color: var(--dark-color);
     margin-bottom: 1rem;
     line-height: 1.2;
 }
 
 .hero-subtitle {
-    font-size: 1.5rem;
+    font-size: clamp(1.1rem, 3vw, 1.5rem);
     color: var(--primary-color);
     margin-bottom: 1.5rem;
     font-weight: 400;
 }
 
 .hero-description {
-    font-size: 1.1rem;
+    font-size: clamp(0.95rem, 2.5vw, 1.1rem);
     color: var(--text-light);
     margin-bottom: 2.5rem;
     line-height: 1.8;
@@ -246,7 +263,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .hero-image img {
     width: 100%;
-    height: 500px;
+    height: clamp(300px, 50vw, 500px);
     object-fit: cover;
     border-radius: 20px;
     box-shadow: 0 20px 40px rgba(0, 0, 0, 0.15);
@@ -687,6 +704,7 @@ h1, h2, h3, h4, h5, h6 {
         transition: 0.3s;
         box-shadow: var(--shadow);
         padding: 2rem 0;
+        z-index: 999;
     }
 
     .nav-menu.active {
@@ -713,42 +731,74 @@ h1, h2, h3, h4, h5, h6 {
         transform: translateY(-8px) rotate(-45deg);
     }
 
+    .hero {
+        min-height: auto;
+        padding: 80px 15px 40px;
+    }
+
     .hero-content {
         grid-template-columns: 1fr;
         text-align: center;
+        gap: 2rem;
     }
 
-    .hero-title {
-        font-size: 2.5rem;
+    .hero-image {
+        order: -1;
     }
 
-    .hero-subtitle {
-        font-size: 1.2rem;
+    .hero-image img {
+        height: 250px;
+        border-radius: 15px;
+    }
+
+    .hero-buttons {
+        justify-content: center;
+        gap: 0.8rem;
     }
 
     .about-content {
         grid-template-columns: 1fr;
         text-align: center;
+        gap: 2rem;
+    }
+
+    .about-features {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
     }
 
     .contact-content {
         grid-template-columns: 1fr;
+        gap: 2rem;
     }
 
     .form-row {
         grid-template-columns: 1fr;
-    }
-
-    .section-title {
-        font-size: 2rem;
+        gap: 1rem;
     }
 
     .menu-categories {
         grid-template-columns: 1fr;
+        gap: 2rem;
+    }
+
+    .events-grid {
+        grid-template-columns: 1fr;
+        gap: 1.5rem;
+    }
+
+    .event-card {
+        padding: 1.5rem;
     }
 
     .newsletter-form {
         flex-direction: column;
+        gap: 0.8rem;
+    }
+
+    .footer-content {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 2rem;
     }
 }
 
@@ -758,34 +808,75 @@ h1, h2, h3, h4, h5, h6 {
     }
 
     .hero {
-        padding: 80px 15px 30px;
+        padding: 70px 15px 30px;
+        min-height: auto;
     }
 
-    .hero-title {
-        font-size: 2rem;
+    .hero-image img {
+        height: 200px;
+    }
+
+    .btn-large {
+        padding: 12px 20px;
+        font-size: 0.95rem;
+        width: 100%;
+        margin-bottom: 0.5rem;
     }
 
     .hero-buttons {
         flex-direction: column;
-        align-items: center;
+        width: 100%;
     }
 
-    .btn-large {
-        padding: 14px 24px;
-        font-size: 1rem;
+    .nav-logo h1 {
+        font-size: 1.4rem;
     }
 
-    .events-grid {
-        grid-template-columns: 1fr;
+    .nav-logo .tagline {
+        font-size: 0.7rem;
+    }
+
+    .menu-item {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 0.5rem;
+    }
+
+    .price {
+        align-self: flex-end;
+        font-size: 1.2rem;
+        font-weight: 800;
+        color: var(--primary-color);
     }
 
     .event-card {
         flex-direction: column;
         text-align: center;
+        padding: 1.2rem;
     }
 
     .event-date {
         align-self: center;
+        margin-bottom: 1rem;
+    }
+
+    .contact-item {
+        flex-direction: column;
+        text-align: center;
+        gap: 0.5rem;
+    }
+
+    .social-links {
+        justify-content: center;
+    }
+
+    .footer-content {
+        grid-template-columns: 1fr;
+        text-align: center;
+    }
+
+    .footer-section {
+        margin-bottom: 2rem;
     }
 }
 
