@@ -777,12 +777,33 @@ h1, h2, h3, h4, h5, h6 {
         left: 0;
     }
 
+    .nav-container {
+        position: relative;
+    }
+
     .nav-buttons {
-        display: none;
+        display: flex;
+        gap: 0.5rem;
+        order: -1; /* Move language button before hamburger */
+        position: absolute;
+        right: 60px; /* Position next to hamburger */
+        top: 50%;
+        transform: translateY(-50%);
+    }
+    
+    .nav-buttons a.btn {
+        display: none; /* Hide menu and reservation buttons on mobile */
+    }
+    
+    .language-selector {
+        display: flex; /* Keep language selector visible */
+        margin-right: 0;
     }
 
     .hamburger {
         display: flex;
+        position: relative;
+        z-index: 1001;
     }
 
     .hamburger.active .bar:nth-child(2) {
@@ -799,7 +820,7 @@ h1, h2, h3, h4, h5, h6 {
 
     .hero {
         min-height: auto;
-        padding: 80px 15px 40px;
+        padding: 140px 15px 40px; /* Increased top padding for mobile */
     }
 
     .hero-content {
