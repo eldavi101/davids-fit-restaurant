@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+    <!--
+        A dark splash/window background so the app never flashes white before Compose
+        takes over. The real theming is done in Compose (core:designsystem).
+    -->
+    <style name="Theme.EquitySignal" parent="android:Theme.Material.NoActionBar">
+        <item name="android:windowBackground">@color/background</item>
+        <item name="android:statusBarColor">@color/background</item>
+        <item name="android:navigationBarColor">@color/background</item>
+    </style>
+</resources>

@@ -419,7 +419,8 @@ def test_no_external_notification_integration_exists_anywhere():
             continue
         if any(part in {".git", ".venv", "build", "node_modules", ".gradle"} for part in path.parts):
             continue
-        if path.name == "test_api.py":       # this file names them in order to ban them
+        # The two guards themselves must name the banned services in order to ban them.
+        if path.name == "test_api.py" or path.as_posix().endswith(".github/workflows/backend.yml"):
             continue
         try:
             text = path.read_text(encoding="utf-8", errors="ignore").lower()
