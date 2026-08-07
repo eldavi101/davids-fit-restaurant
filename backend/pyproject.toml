@@ -1,0 +1,51 @@
+[build-system]
+requires = ["setuptools>=68", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "equity-signal-backend"
+version = "1.0.0"
+description = "Market scanning, BUY/SELL signal generation and alert lifecycle tracking for the Equity Signal Tracker Android app"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.110",
+    "uvicorn[standard]>=0.27",
+    "sqlalchemy>=2.0",
+    "pydantic>=2.6",
+    "pydantic-settings>=2.2",
+    "numpy>=1.26",
+    "pandas>=2.1",
+    "scipy>=1.11",
+    "scikit-learn>=1.4",
+    "httpx>=0.26",
+    "python-dateutil>=2.8",
+    "orjson>=3.9",
+]
+
+[project.optional-dependencies]
+postgres = ["psycopg[binary]>=3.1"]
+dev = [
+    "pytest>=8.0",
+    "pytest-asyncio>=0.23",
+    "ruff>=0.3",
+]
+
+[tool.setuptools.packages.find]
+include = ["app*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+filterwarnings = ["ignore::DeprecationWarning"]
+addopts = "-q"
+
+[tool.ruff]
+line-length = 100
+target-version = "py311"
+
+[tool.ruff.lint]
+select = ["E", "F", "I", "UP", "B"]
+# E501  line length is handled by the formatter, not the linter
+# B008  FastAPI's Depends() in defaults is the framework's intended usage
+# UP042 str+Enum is deliberate: these values are serialised straight to JSON and compared
+#       against plain strings from the database, which StrEnum would not change
+ignore = ["E501", "B008", "UP042"]
