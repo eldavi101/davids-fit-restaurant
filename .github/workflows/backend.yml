@@ -1,0 +1,71 @@
+name: Backend
+
+on:
+  push:
+    branches: ["**"]
+    paths:
+      - "backend/**"
+      - ".github/workflows/backend.yml"
+  pull_request:
+    paths:
+      - "backend/**"
+      - ".github/workflows/backend.yml"
+  workflow_dispatch:
+
+concurrency:
+  group: backend-${{ github.ref }}
+  cancel-in-progress: true
+
+jobs:
+  test:
+    name: Lint and test
+    runs-on: ubuntu-latest
+    defaults:
+      run:
+        working-directory: backend
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: actions/setup-python@v5
+        with:
+          python-version: "3.12"
+          cache: pip
+
+      - name: Install
+        run: |
+          python -m pip install --upgrade pip
+          pip install -e ".[dev]"
+
+      - name: Lint
+        run: ruff check app tests
+
+      - name: Test
+        env:
+          ENV_FILE: /dev/null
+          MARKET_DATA_PROVIDER: synthetic
+        run: pytest -q
+
+  no-external-alert-channels:
+    name: No external notification integrations
+    runs-on: ubuntu-latest
+
+    # Requirement 56 is enforced here rather than merely documented. The Alert Center plus
+    # local Android notifications are the only delivery mechanisms; if anyone ever adds an
+    # outbound messaging integration, this job fails the build.
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Scan the source tree
+        run: |
+          set -o pipefail
+          PATTERN='telegram|discord|slack|whatsapp|twilio|sendgrid|mailgun|smtplib|nodemailer|smtp'
+          if grep -rEni "$PATTERN" \
+              --include='*.py' --include='*.kt' --include='*.kts' \
+              --include='*.xml' --include='*.toml' \
+              backend android \
+              | grep -v 'backend/tests/test_api.py' ; then
+            echo "::error::A prohibited external notification integration was found."
+            exit 1
+          fi
+          echo "Clean: no external notification integration present."
