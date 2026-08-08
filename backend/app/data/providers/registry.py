@@ -50,7 +50,12 @@ def build_provider(name: str, settings: Settings | None = None) -> MarketDataPro
         )
     if key == "synthetic":
         return SyntheticProvider()
-    return cls(api_key=settings.provider_key(key))  # type: ignore[call-arg]
+    return cls(  # type: ignore[call-arg]
+        api_key=settings.provider_key(key),
+        # 0 keeps the adapter's own per-vendor default; anything else is the operator
+        # stating what their plan actually allows.
+        rate_limit_per_minute=settings.market_data_rate_limit_per_minute or None,
+    )
 
 
 class ProviderRegistry(MarketDataProvider):

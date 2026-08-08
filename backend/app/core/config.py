@@ -48,6 +48,10 @@ class Settings(BaseSettings):
 
     market_data_provider: str = "synthetic"
     market_data_fallbacks: str = ""
+    #: 0 means "use the adapter's own default for that vendor". Set this to the plan's
+    #: documented limit — pacing client-side is what keeps a universe refresh from
+    #: spending the whole minute budget in the first second and collecting 429s.
+    market_data_rate_limit_per_minute: int = 0
 
     polygon_api_key: str | None = None
     finnhub_api_key: str | None = None
@@ -62,6 +66,12 @@ class Settings(BaseSettings):
     scan_interval_minutes: int = 30
     monitor_interval_minutes: int = 5
     universe_refresh_hour_et: int = 7
+
+    #: Hard ceiling on how many listed symbols one universe refresh will consider.
+    #: 0 means "no ceiling". A vendor listing is ~10k symbols and each survivor of the
+    #: structural filters costs one history request, so this is the knob that decides
+    #: whether a refresh takes minutes or hours on a rate-limited plan.
+    universe_max_symbols: int = 0
 
     max_bar_age_minutes: int = 120
     min_bars_required: int = 252

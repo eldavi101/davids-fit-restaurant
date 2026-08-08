@@ -59,12 +59,24 @@ class BaseUrlInterceptor(private val baseUrlProvider: () -> String) : Intercepto
             .scheme(newBase.scheme)
             .host(newBase.host)
             .port(newBase.port)
+            .encodedPath(pathPrefix(newBase.encodedPath) + chain.request().url.encodedPath)
             .build()
         return chain.proceed(chain.request().newBuilder().url(rebuilt).build())
     }
 
     private fun normalize(url: String): String =
         if (url.startsWith("http://") || url.startsWith("https://")) url else "https://$url"
+
+    /**
+     * Whatever sits in front of `/api/v1/` in the configured URL.
+     *
+     * Every request Retrofit builds already carries the `/api/v1/…` path, so a backend at
+     * the host root needs no prefix. One published under a subpath — a shared reverse
+     * proxy serving `https://example.com/equity/api/v1/` — needs `/equity` put back in
+     * front, which is exactly what the previous scheme/host/port-only rewrite dropped.
+     */
+    private fun pathPrefix(encodedPath: String): String =
+        encodedPath.removeSuffix("/").removeSuffix("/api/v1")
 }
 
 object NetworkDefaults {

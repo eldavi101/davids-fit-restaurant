@@ -136,6 +136,20 @@ re-enqueueing is idempotent. All workers are `@HiltWorker` with a
 The backend keeps analysing regardless of the app's state; the app is a reader
 (requirement §44).
 
+### Where the app points
+
+Retrofit's base URL is fixed at construction, so `BaseUrlInterceptor` rewrites each
+request from the value the user saved in Settings — scheme, host, port, **and any path
+prefix in front of `/api/v1/`**, so a backend published under a shared reverse proxy
+(`https://example.com/equity/api/v1/`) resolves as well as one at a host root. A URL typed
+without a scheme defaults to `https`, never to cleartext; an unparseable value leaves the
+request untouched rather than failing the call.
+
+Transport security is variant-specific. The release build permits no cleartext at all. The
+debug build overrides that (`app/src/debug/res/xml/network_security_config.xml`) because
+the ordinary way to try the app is a backend running on a laptop over the LAN, where there
+is no certificate to trust — see `docs/DEPLOYMENT.md` §4 for the HTTPS path.
+
 ## 5. Notifications
 
 Channels (created on first launch, `NotificationChannelGroup` "Signals"):

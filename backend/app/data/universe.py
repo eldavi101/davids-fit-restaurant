@@ -37,12 +37,15 @@ class LiquidityFacts:
     avg_dollar_volume_50d: float | None = None
 
 
-def check_eligibility(
-    info: InstrumentInfo,
-    facts: LiquidityFacts,
-    cfg: UniverseConfig,
-) -> EligibilityResult:
-    """Apply every universe rule in a fixed order and return the first failure."""
+def prescreen(info: InstrumentInfo, cfg: UniverseConfig) -> EligibilityResult | None:
+    """The rules decidable from the profile alone — security class and exchange.
+
+    Returns the failure, or ``None`` when the symbol survives and still needs its
+    liquidity checked. The universe refresh calls this first so it never spends a
+    rate-limited market-data request on a symbol that is already out: a vendor lists
+    roughly ten thousand U.S. symbols and the default filters keep a small fraction of
+    them, so the saving is most of the refresh.
+    """
     t = info.ticker
 
     # --- security class -----------------------------------------------------------------
@@ -67,6 +70,20 @@ def check_eligibility(
             return EligibilityResult(
                 t, False, f"exchange {info.exchange} not in {', '.join(cfg.allowed_exchanges)}"
             )
+    return None
+
+
+def check_eligibility(
+    info: InstrumentInfo,
+    facts: LiquidityFacts,
+    cfg: UniverseConfig,
+) -> EligibilityResult:
+    """Apply every universe rule in a fixed order and return the first failure."""
+    t = info.ticker
+
+    structural = prescreen(info, cfg)
+    if structural is not None:
+        return structural
 
     # --- price ------------------------------------------------------------------------------
     if facts.price is None:

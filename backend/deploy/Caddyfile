@@ -1,0 +1,30 @@
+# TLS termination for the Equity Signal Tracker API.
+#
+# Caddy obtains and renews a Let's Encrypt certificate automatically, which is what makes
+# the API reachable from the Android release build: that build permits no cleartext
+# traffic, so a phone on mobile data can only talk to an HTTPS endpoint.
+#
+# Requirements: PUBLIC_DOMAIN must be a DNS name whose A/AAAA record points at this host,
+# and ports 80 and 443 must be reachable from the internet for the ACME challenge.
+
+{$PUBLIC_DOMAIN} {
+	encode gzip
+
+	# The API authenticates every non-health route with X-API-Key; this header is
+	# forwarded untouched.
+	reverse_proxy api:8000 {
+		health_uri /api/v1/health
+		health_interval 30s
+	}
+
+	header {
+		Strict-Transport-Security "max-age=31536000"
+		X-Content-Type-Options "nosniff"
+		-Server
+	}
+
+	log {
+		output stdout
+		format console
+	}
+}

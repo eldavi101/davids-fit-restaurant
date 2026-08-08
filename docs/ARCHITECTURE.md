@@ -178,8 +178,13 @@ itself — a SELL requires fresh data or a hard stop breach on confirmed prices.
   environment variables (`.env.example` documents them; `.env` is git-ignored).
 - The Android app authenticates to the backend with a single `X-API-Key` supplied by
   the user in Settings and stored in DataStore. It never sees provider credentials.
-- HTTPS enforced; cleartext traffic disabled except for an explicit debug localhost
-  network-security config.
+- The **release** variant permits no cleartext traffic at all. The **debug** variant
+  overrides that (`app/src/debug/res/xml/network_security_config.xml`) because the normal
+  way to try the app is a backend on a laptop over the LAN, where there is no certificate
+  to trust. For anything reachable from outside a trusted network, `backend/deploy/Caddyfile`
+  terminates TLS with an automatically renewed certificate.
+- The backend is fail-closed on authentication: an empty `API_KEYS` rejects every request
+  rather than allowing them.
 
 ---
 
@@ -209,6 +214,9 @@ creates a *new* version; historical trades are never re-evaluated under new logi
 | Backend deps | `cd backend && python -m venv .venv && .venv/bin/pip install -e ".[dev]"` |
 | Backend tests | `cd backend && .venv/bin/pytest` |
 | Backend run | `uvicorn app.main:app --reload` |
+| First-run data | `python -m app.cli bootstrap` (schema → universe → scan → monitor) |
+| Configuration check | `python -m app.cli check` |
+| Full deployment | `backend/scripts/setup.sh` — see `docs/DEPLOYMENT.md` |
 | Android debug APK | `cd android && ./gradlew :app:assembleDebug` |
 | Android unit tests | `cd android && ./gradlew test` |
 

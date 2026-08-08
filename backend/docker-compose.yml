@@ -1,3 +1,12 @@
+# Equity Signal Tracker — backend stack.
+#
+#   docker compose up -d --build                 db + api, reachable on :8000
+#   docker compose run --rm bootstrap            fill the database with real data now
+#   docker compose --profile tls up -d           adds Caddy, which gets a real certificate
+#
+# Every credential comes from .env, which is git-ignored. Nothing sensitive is baked into
+# an image or committed.
+
 services:
   db:
     image: postgres:16-alpine
@@ -12,8 +21,10 @@ services:
       interval: 5s
       timeout: 3s
       retries: 10
+    # Bound to loopback: the database is for the api container, never for the internet.
     ports:
-      - "5432:5432"
+      - "127.0.0.1:5432:5432"
+    restart: unless-stopped
 
   api:
     build: .
@@ -25,9 +36,47 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    # Set API_BIND_HOST=127.0.0.1 in .env when Caddy terminates TLS in front, so the
+    # plaintext port is not exposed to the network.
     ports:
-      - "8000:8000"
+      - "${API_BIND_HOST:-0.0.0.0}:8000:8000"
     restart: unless-stopped
+
+  # One-shot: create the schema, build the universe, run the first scan and monitor pass.
+  # Without it a fresh deployment shows an empty app until the scheduler's first market-
+  # hours interval — which on a weekend means Monday.
+  bootstrap:
+    build: .
+    env_file: .env
+    environment:
+      DATABASE_URL: postgresql+psycopg://equity:${POSTGRES_PASSWORD}@db:5432/equity_signal
+      ENABLE_SCHEDULER: "false"
+    depends_on:
+      db:
+        condition: service_healthy
+    command: ["python", "-m", "app.cli", "bootstrap"]
+    restart: "no"
+    profiles: ["bootstrap"]
+
+  # HTTPS terminator. The Android release build refuses cleartext, so a phone on mobile
+  # data needs this (or an equivalent proxy) in front of the API.
+  caddy:
+    image: caddy:2-alpine
+    depends_on:
+      - api
+    environment:
+      PUBLIC_DOMAIN: ${PUBLIC_DOMAIN:?set PUBLIC_DOMAIN to the hostname pointing at this server}
+    volumes:
+      - ./deploy/Caddyfile:/etc/caddy/Caddyfile:ro
+      - caddy_data:/data
+      - caddy_config:/config
+    ports:
+      - "80:80"
+      - "443:443"
+    restart: unless-stopped
+    profiles: ["tls"]
 
 volumes:
   pgdata:
+  caddy_data:
+  caddy_config:

@@ -9,7 +9,7 @@ verification step. Phases are not marked done until their verification passes.
 
 | Component | Can it be compiled/tested in the dev container? | Status |
 |---|---|---|
-| Backend (Python/FastAPI) | **Yes** — PyPI is reachable | 198 tests pass, ruff clean, green in CI |
+| Backend (Python/FastAPI) | **Yes** — PyPI is reachable | 219 tests pass, ruff clean, green in CI |
 | Android (Kotlin/Gradle) | **No** — `dl.google.com` is blocked by egress policy, and `maven.google.com` redirects to it. AGP, AndroidX, Compose, Room, Hilt and the Android SDK are all unreachable | **Green in CI**: all 19 modules compile, unit tests pass, `app-debug.apk` (19.8 MB) uploaded as an artifact |
 
 `curl https://maven.google.com/com/android/tools/build/gradle/8.7.3/gradle-8.7.3.pom`
@@ -148,6 +148,36 @@ Android: ViewModel, repository, Room, network, navigation, UI tests.
 `.env.example`, no secrets in source, API-key auth, rate limiting, structured
 logging, health/system-status endpoints, graceful degradation, Docker Compose,
 CI workflows.
+
+## Phase 23 — Live-data deployment
+Everything between "the code compiles" and "the phone shows real prices":
+
+* **Client-side pacing.** Every vendor sells access by request rate, and a 429 costs a
+  request while returning no data — which the scanner correctly treats as a refusal to
+  signal. So an unpaced deployment does not merely run slowly, it never alerts. A sliding
+  60-second limiter fronts every request, with per-vendor defaults and a
+  `MARKET_DATA_RATE_LIMIT_PER_MINUTE` override; 429/5xx/transport errors are retried with
+  exponential backoff and honour `Retry-After`, while a rejected key fails immediately
+  rather than burning quota.
+* **Universe pre-screen.** Exchange and security-type rules are decided from the profile
+  before any market-data request, so the ~10k listed symbols cost history calls only for
+  the fraction that could ever be eligible. `UNIVERSE_MAX_SYMBOLS` caps the rest.
+* **Operator CLI** (`python -m app.cli`): `check`, `init-db`, `universe`, `scan`,
+  `monitor`, `bootstrap`. `bootstrap` exists because the scheduler leaves a fresh
+  deployment looking broken — it waits for its first interval, and its market-hours guard
+  means a Saturday install shows an empty app until Monday.
+* **Deployment**: Postgres + API + one-shot bootstrap + optional Caddy TLS in
+  `docker-compose.yml`; `scripts/setup.sh` generates secrets and runs the whole sequence;
+  `docs/DEPLOYMENT.md` documents it, including the four things only the operator can supply.
+* **Android**: a debug-only network security config so a LAN backend is reachable (the
+  release build stays HTTPS-only), and a base-URL rewrite that preserves a reverse-proxy
+  subpath instead of collapsing it to the host root.
+
+✔ Verify: `test_provider_transport.py` (limiter windows, retry/backoff, pre-screen
+equivalence with the full rule set), `test_cli.py` (check reports each misconfiguration,
+bootstrap stops at the first failure, no key is ever printed),
+`BaseUrlInterceptorTest.kt` (host/port/subpath rewriting, https default, invalid input
+left untouched).
 
 ---
 

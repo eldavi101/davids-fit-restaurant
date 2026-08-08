@@ -18,7 +18,7 @@ whether the thesis still holds, and exactly when and why the system decided to s
 
 | Path | Contents |
 |---|---|
-| `docs/` | The eight design documents. Every score, gate and exit rule is defined mathematically there and implemented to match. |
+| `docs/` | The eight design documents plus `DEPLOYMENT.md`. Every score, gate and exit rule is defined mathematically there and implemented to match. |
 | `backend/` | Python 3.11+ / FastAPI / SQLAlchemy. Market data, indicators, regime, scoring, BUY and SELL engines, alert lifecycle, backtesting, paper portfolio, 30 REST endpoints. |
 | `android/` | Kotlin / Jetpack Compose / Material 3, 19 Gradle modules across `:app`, `:core:*`, `:domain`, `:data`, `:features:*`. |
 | `.github/workflows/` | Backend lint + tests, Android build + APK artifact, and the prohibited-integration guard. |
@@ -47,15 +47,32 @@ cd android
 
 ## Running the backend
 
+For a real deployment — Postgres, a market-data vendor, HTTPS, first scan — follow
+**[`docs/DEPLOYMENT.md`](DEPLOYMENT.md)**. The short version:
+
+```bash
+cd backend
+./scripts/setup.sh          # writes .env, starts Postgres + API, bootstraps live data
+```
+
+For development:
+
 ```bash
 cd backend
 python -m venv .venv && .venv/bin/pip install -e ".[dev]"
 cp .env.example .env                  # then fill it in — never commit .env
-.venv/bin/pytest                      # 198 tests
+.venv/bin/pytest                      # 231 tests
+.venv/bin/python -m app.cli bootstrap  # schema + universe + first scan
 .venv/bin/uvicorn app.main:app --reload
 ```
 
-Or with Docker: `docker compose up` (Postgres + API).
+The operator CLI is the way to see what a deployment is actually doing:
+
+```bash
+python -m app.cli check      # database, provider key, scheduler, credential hygiene
+python -m app.cli scan       # force a scan now
+python -m app.cli universe   # rebuild the tradable universe
+```
 
 Set `MARKET_DATA_PROVIDER` to one of `polygon`, `finnhub`, `fmp`, `twelvedata`,
 `alphavantage` and supply that vendor's key. Leaving it as `synthetic` runs the whole

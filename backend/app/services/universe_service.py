@@ -18,7 +18,7 @@ from app.core.config import Settings, StrategyConfig, get_settings, get_strategy
 from app.core.errors import MarketDataUnavailableError
 from app.core.logging import get_logger, payload
 from app.data.providers.registry import ProviderRegistry, get_provider
-from app.data.universe import BENCHMARK_SYMBOLS, LiquidityFacts, check_eligibility
+from app.data.universe import BENCHMARK_SYMBOLS, LiquidityFacts, check_eligibility, prescreen
 from app.db.models import Instrument
 from app.services.market_data import MarketDataService
 
@@ -32,6 +32,7 @@ class UniverseRefreshResult:
     updated: int = 0
     eligible: int = 0
     delisted: int = 0
+    liquidity_probes: int = 0
     exclusion_reasons: dict[str, int] = field(default_factory=dict)
     errors: list[str] = field(default_factory=list)
 
@@ -42,6 +43,9 @@ class UniverseRefreshResult:
             "updated": self.updated,
             "eligible": self.eligible,
             "delisted": self.delisted,
+            # How many market-data requests the refresh actually spent — the number that
+            # matters when the vendor plan is metered.
+            "liquidity_probes": self.liquidity_probes,
             "exclusion_reasons": self.exclusion_reasons,
             "errors": self.errors[:20],
         }
@@ -67,8 +71,9 @@ class UniverseService:
     ) -> UniverseRefreshResult:
         result = UniverseRefreshResult()
         infos = self.provider.list_universe()
-        if max_symbols:
-            infos = infos[:max_symbols]
+        limit = max_symbols or self.settings.universe_max_symbols
+        if limit:
+            infos = infos[:limit]
         result.total_symbols = len(infos)
         seen: set[str] = set()
 
@@ -79,11 +84,16 @@ class UniverseService:
                 select(Instrument).where(Instrument.ticker == ticker)
             ).scalar_one_or_none()
 
+            # Decide everything that can be decided from the profile before touching the
+            # provider: a symbol excluded by exchange or security class must not cost a
+            # metered request.
+            structural = prescreen(info, self.cfg.universe)
             facts = LiquidityFacts(market_cap=info.market_cap)
-            if compute_liquidity:
+            if structural is None and compute_liquidity:
                 facts = self._liquidity(ticker, info.market_cap, result)
+                result.liquidity_probes += 1
 
-            eligibility = check_eligibility(info, facts, self.cfg.universe)
+            eligibility = structural or check_eligibility(info, facts, self.cfg.universe)
             # Benchmarks and sector ETFs must always be present for the regime engine, so
             # they are stored regardless of the tradability rules; they simply are not
             # marked eligible unless they genuinely pass.

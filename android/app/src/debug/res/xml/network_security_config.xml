@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+    <!--
+        DEBUG BUILDS ONLY. This file overrides the main one for the debug variant.
+
+        Cleartext is permitted here because the normal way to try the app is to run the
+        backend on a laptop and point the phone at it over the LAN (http://192.168.x.x:8000),
+        where there is no certificate to trust. The release variant keeps the main config —
+        HTTPS everywhere, no exceptions — so this concession never reaches a shipped build.
+
+        This weakens transport security for the debug APK: install it on a network you
+        trust, and use HTTPS (see deploy/Caddyfile) for anything reachable from outside.
+    -->
+    <base-config cleartextTrafficPermitted="true">
+        <trust-anchors>
+            <certificates src="system" />
+            <!-- Lets a self-signed certificate be trusted on a debug build if the
+                 developer installs it as a user certificate. -->
+            <certificates src="user" />
+        </trust-anchors>
+    </base-config>
+</network-security-config>

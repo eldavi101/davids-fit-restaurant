@@ -14,6 +14,7 @@ record a data-integrity refusal instead of inventing a signal.
 
 from __future__ import annotations
 
+import time
 from datetime import UTC, datetime, timedelta
 
 import httpx
@@ -21,6 +22,7 @@ import httpx
 from app.core.errors import ProviderError
 from app.core.logging import get_logger
 from app.data.providers.base import MarketDataProvider, ProviderHealth
+from app.data.providers.throttle import RateLimiter
 from app.domain.types import Bar, Fundamentals, InstrumentInfo, Quote
 
 log = get_logger(__name__)
@@ -60,32 +62,98 @@ def _epoch_ms_to_utc(ms: float) -> datetime:
 
 
 class _RestProvider(MarketDataProvider):
-    """Shared HTTP plumbing: timeouts, retries, auth, error translation."""
+    """Shared HTTP plumbing: pacing, timeouts, retries, auth, error translation."""
 
     base_url: str = ""
+    #: Requests per minute this adapter paces itself to when the environment does not
+    #: override it. These are the entry paid tier of each vendor, not the free tier —
+    #: a free key needs MARKET_DATA_RATE_LIMIT_PER_MINUTE set to its own (lower) limit.
+    default_rate_limit_per_minute: int = 60
+    max_attempts: int = 3
 
-    def __init__(self, api_key: str | None, timeout: float = 20.0):
+    def __init__(
+        self,
+        api_key: str | None,
+        timeout: float = 20.0,
+        rate_limit_per_minute: int | None = None,
+        retry_backoff_base: float = 1.0,
+        limiter: RateLimiter | None = None,
+    ):
         if not api_key:
             raise ProviderError(f"{self.name} requires an API key; set it in the backend environment")
         self.api_key = api_key
+        self.retry_backoff_base = retry_backoff_base
+        self.limiter = limiter or RateLimiter(
+            self.default_rate_limit_per_minute
+            if rate_limit_per_minute is None
+            else rate_limit_per_minute
+        )
         self._client = httpx.Client(
             base_url=self.base_url,
             timeout=timeout,
             headers={"User-Agent": "equity-signal-tracker/1.0"},
         )
 
+    # -- transport ----------------------------------------------------------------------
+
+    def _sleep(self, seconds: float) -> None:  # test seam
+        time.sleep(seconds)
+
+    def _retry_delay(self, attempt: int, response: httpx.Response | None = None) -> float:
+        """Exponential backoff, but a vendor's own ``Retry-After`` always wins."""
+        if response is not None:
+            header = response.headers.get("Retry-After")
+            if header:
+                try:
+                    return max(0.0, float(header))
+                except ValueError:
+                    pass
+        return self.retry_backoff_base * (2 ** (attempt - 1))
+
     def _get(self, path: str, params: dict | None = None) -> dict | list:
-        try:
-            response = self._client.get(path, params=params or {})
-        except httpx.HTTPError as exc:
-            raise ProviderError(f"{self.name} transport error: {exc}") from exc
-        if response.status_code in (401, 403):
-            raise ProviderError(f"{self.name} rejected the API key ({response.status_code})")
-        if response.status_code == 429:
-            raise ProviderError(f"{self.name} rate limit exceeded")
-        if response.status_code >= 400:
-            raise ProviderError(f"{self.name} HTTP {response.status_code}: {response.text[:200]}")
-        return response.json()
+        """One vendor call, paced and retried.
+
+        Retries cover only the failures that are plausibly transient — transport errors,
+        429 and 5xx. A rejected key or a 4xx is returned immediately: retrying an auth
+        failure just burns quota and delays a message the operator needs to see.
+        """
+        last_error = ""
+        for attempt in range(1, self.max_attempts + 1):
+            self.limiter.acquire()
+            try:
+                response = self._client.get(path, params=params or {})
+            except httpx.HTTPError as exc:
+                last_error = f"{self.name} transport error: {exc}"
+                if attempt == self.max_attempts:
+                    raise ProviderError(last_error) from exc
+                self._sleep(self._retry_delay(attempt))
+                continue
+
+            if response.status_code in (401, 403):
+                raise ProviderError(f"{self.name} rejected the API key ({response.status_code})")
+            if response.status_code == 429 or response.status_code >= 500:
+                last_error = (
+                    f"{self.name} rate limit exceeded"
+                    if response.status_code == 429
+                    else f"{self.name} HTTP {response.status_code}: {response.text[:200]}"
+                )
+                if attempt == self.max_attempts:
+                    raise ProviderError(last_error)
+                log.warning(
+                    "provider_retry",
+                    extra={
+                        "provider": self.name,
+                        "status": response.status_code,
+                        "attempt": attempt,
+                    },
+                )
+                self._sleep(self._retry_delay(attempt, response))
+                continue
+            if response.status_code >= 400:
+                raise ProviderError(f"{self.name} HTTP {response.status_code}: {response.text[:200]}")
+            return response.json()
+
+        raise ProviderError(last_error or f"{self.name} request failed")
 
     def close(self) -> None:
         self._client.close()
@@ -109,6 +177,9 @@ class PolygonProvider(_RestProvider):
     name = "polygon"
     base_url = "https://api.polygon.io"
     supports_delisted = True  # /v3/reference/tickers supports active=false
+    # Stocks Starter and above are unmetered; the free tier is 5/min. 100 paces bursts
+    # without throttling a paid key.
+    default_rate_limit_per_minute = 100
 
     def list_universe(self) -> list[InstrumentInfo]:
         out: list[InstrumentInfo] = []
@@ -190,6 +261,7 @@ class PolygonProvider(_RestProvider):
 class FinnhubProvider(_RestProvider):
     name = "finnhub"
     base_url = "https://finnhub.io/api/v1"
+    default_rate_limit_per_minute = 60  # free tier ceiling
 
     def list_universe(self) -> list[InstrumentInfo]:
         rows = self._get("/stock/symbol", {"exchange": "US", "token": self.api_key})
@@ -275,6 +347,7 @@ class FinnhubProvider(_RestProvider):
 class FmpProvider(_RestProvider):
     name = "fmp"
     base_url = "https://financialmodelingprep.com/api/v3"
+    default_rate_limit_per_minute = 200  # Starter is 300/min; free plans are daily-capped
 
     def list_universe(self) -> list[InstrumentInfo]:
         rows = self._get("/stock/list", {"apikey": self.api_key})
@@ -351,6 +424,7 @@ class FmpProvider(_RestProvider):
 class TwelveDataProvider(_RestProvider):
     name = "twelvedata"
     base_url = "https://api.twelvedata.com"
+    default_rate_limit_per_minute = 8  # free tier; raise it in the environment on a paid plan
 
     def list_universe(self) -> list[InstrumentInfo]:
         payload = self._get("/stocks", {"country": "United States", "apikey": self.api_key})
@@ -404,6 +478,7 @@ class TwelveDataProvider(_RestProvider):
 class AlphaVantageProvider(_RestProvider):
     name = "alphavantage"
     base_url = "https://www.alphavantage.co"
+    default_rate_limit_per_minute = 5  # free tier; too slow to scan a universe alone
 
     def list_universe(self) -> list[InstrumentInfo]:
         # Alpha Vantage's listing endpoint returns CSV; the adapter deliberately does not
