@@ -9,8 +9,8 @@ verification step. Phases are not marked done until their verification passes.
 
 | Component | Can it be compiled/tested in the dev container? | Status |
 |---|---|---|
-| Backend (Python/FastAPI) | **Yes** — PyPI is reachable | Built, imports clean, full pytest suite runs |
-| Android (Kotlin/Gradle) | **No** — `dl.google.com` is blocked by egress policy, and `maven.google.com` redirects to it. AGP, AndroidX, Compose, Room, Hilt and the Android SDK are all unreachable | Sources complete; compiled by CI |
+| Backend (Python/FastAPI) | **Yes** — PyPI is reachable | 198 tests pass, ruff clean, green in CI |
+| Android (Kotlin/Gradle) | **No** — `dl.google.com` is blocked by egress policy, and `maven.google.com` redirects to it. AGP, AndroidX, Compose, Room, Hilt and the Android SDK are all unreachable | **Green in CI**: all 19 modules compile, unit tests pass, `app-debug.apk` (19.8 MB) uploaded as an artifact |
 
 `curl https://maven.google.com/com/android/tools/build/gradle/8.7.3/gradle-8.7.3.pom`
 returns a 301 to `dl.google.com`, which the proxy answers with **403 (policy
@@ -21,6 +21,24 @@ Consequence: **the APK is produced by `.github/workflows/android.yml` on GitHub
 Actions**, not in this container. The workflow runs unit tests, assembles the debug
 APK and uploads it as an artifact. Acceptance criterion §60.1 ("I can install the
 APK") is satisfied by downloading that artifact.
+
+CI was therefore the first compiler to see the Android sources, and it took six rounds
+to reach green. What it found, in order:
+
+| Round | Finding |
+|---|---|
+| 1 | `NetworkModule` used OkHttp 3's Java-style accessors; OkHttp 4 deprecates them at ERROR level |
+| 2 | `MetricRow` declared `modifier` before `valueColor`, so 25 call sites passed a `Color` to a `Modifier` parameter |
+| 3 | `:app` injected `AppPreferences` without declaring `:core:datastore` |
+| 4 | `Modifier.padding` used without its import |
+| 5 | `AlertsViewModel` combined `selectedTab` alongside its own `flatMapLatest`, so a tab switch briefly paired the new tab with the previous tab's alerts |
+| 6 | Green — unit tests pass, APK assembled |
+
+Round 5 is the one worth recording: the failing unit test was reporting a real,
+user-visible defect (the CLOSED tab momentarily showing open trades), not a flaw in
+itself. The fix moves the tab inside `flatMapLatest` so tab and list always come from a
+single emission, making the inconsistent state unrepresentable rather than merely
+unlikely.
 
 ---
 

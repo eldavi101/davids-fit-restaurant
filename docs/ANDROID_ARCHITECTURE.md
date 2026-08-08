@@ -257,3 +257,7 @@ The Android sources here are therefore *written but not compiled locally*.
 `./gradlew testDebugUnitTest` on GitHub Actions, where the SDK is installed and the
 network is open, and uploads `app-debug.apk` as a build artifact. That workflow is
 the authoritative compile check for this module.
+
+**Status: green.** All 19 modules compile, the unit tests pass, and the workflow
+publishes `equity-signal-debug-apk` (19.8 MB). See `IMPLEMENTATION_PLAN.md` for the
+six rounds of findings it took to get there.

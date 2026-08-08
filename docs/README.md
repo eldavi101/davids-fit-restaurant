@@ -34,8 +34,9 @@ The development container used to build this project blocks `dl.google.com` at t
 policy layer, and `maven.google.com` redirects there — so the Android SDK, AGP, AndroidX,
 Compose, Room and Hilt are unreachable and no Gradle Android build can run inside it.
 
-**The APK is therefore produced by CI.** Push the branch (or run the workflow manually) and
-download the `equity-signal-debug-apk` artifact from the **Android** workflow run. To build
+**The APK is therefore produced by CI**, and the Android workflow is green: all 19 modules
+compile, the unit tests pass, and each run publishes `equity-signal-debug-apk` (~19.8 MB).
+Download it from the **Android** workflow run under the repository's Actions tab. To build
 locally on a machine with the Android SDK:
 
 ```bash

@@ -217,5 +217,5 @@ creates a *new* version; historical trades are never re-evaluated under new logi
 > egress-policy level. The Android SDK, AGP, AndroidX, Compose, Room and Hilt
 > artifacts are unreachable, so the APK **cannot** be produced inside that container.
 > `.github/workflows/android.yml` builds and uploads the APK on GitHub Actions, where
-> the SDK is present. The backend has no such restriction and its full test suite runs
-> locally. See `docs/IMPLEMENTATION_PLAN.md` §"Build verification status".
+> the SDK is present; that workflow is green and publishes `equity-signal-debug-apk`.
+> The backend has no such restriction and its full test suite runs locally. See `docs/IMPLEMENTATION_PLAN.md` §"Build verification status".
