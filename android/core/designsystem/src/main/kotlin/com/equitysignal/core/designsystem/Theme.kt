@@ -11,7 +11,6 @@ import androidx.compose.runtime.staticCompositionLocalOf
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.TextStyle
 import androidx.compose.ui.text.font.FontFamily
-import androidx.compose.ui.text.font.FontFeatureSetting
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.sp
 
@@ -101,9 +100,6 @@ private val LightScheme = lightColorScheme(
     outline = Color(0xFFD5DAE2),
     error = Color(0xFFC1123F),
 )
-
-/** Tabular figures so price and percentage columns line up digit for digit. */
-private val tabular = TextStyle(fontFeatureSettings = FontFeatureSetting("tnum").toString())
 
 private val AppTypography = Typography().run {
     copy(

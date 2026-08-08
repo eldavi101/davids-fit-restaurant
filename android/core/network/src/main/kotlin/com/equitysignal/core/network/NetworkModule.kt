@@ -8,6 +8,7 @@ import dagger.hilt.components.SingletonComponent
 import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 import kotlinx.serialization.json.Json
+import okhttp3.HttpUrl.Companion.toHttpUrlOrNull
 import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
@@ -49,14 +50,15 @@ class BaseUrlInterceptor(private val baseUrlProvider: () -> String) : Intercepto
         val configured = baseUrlProvider().trim()
         if (configured.isEmpty()) return chain.proceed(chain.request())
 
-        val newBase = okhttp3.HttpUrl.parse(normalize(configured))
+        // OkHttp 4 exposes these as Kotlin properties; the old Java-style accessors are
+        // deprecated at ERROR level and will not compile.
+        val newBase = normalize(configured).toHttpUrlOrNull()
             ?: return chain.proceed(chain.request())
 
-        val original = chain.request().url()
-        val rebuilt = original.newBuilder()
-            .scheme(newBase.scheme())
-            .host(newBase.host())
-            .port(newBase.port())
+        val rebuilt = chain.request().url.newBuilder()
+            .scheme(newBase.scheme)
+            .host(newBase.host)
+            .port(newBase.port)
             .build()
         return chain.proceed(chain.request().newBuilder().url(rebuilt).build())
     }

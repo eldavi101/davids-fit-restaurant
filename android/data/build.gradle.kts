@@ -35,6 +35,12 @@ dependencies {
     implementation(project(":core:datastore"))
     implementation(project(":core:notifications"))
 
+    // Declared directly, not inherited: `implementation(project(...))` does not expose a
+    // module's own dependencies, and this module names `retrofit2.HttpException` when it
+    // maps transport failures and `Json` when it (de)serialises cached snapshots.
+    implementation(libs.retrofit)
+    implementation(libs.kotlinx.serialization.json)
+
     implementation(libs.kotlinx.coroutines.android)
     implementation(libs.androidx.work.runtime)
     implementation(libs.hilt.android)

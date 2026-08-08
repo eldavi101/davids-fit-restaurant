@@ -47,10 +47,27 @@ jobs:
           cache-read-only: ${{ github.ref != 'refs/heads/main' }}
 
       - name: Unit tests
-        run: ./gradlew testDebugUnitTest --stacktrace
+        id: tests
+        run: |
+          set -o pipefail
+          ./gradlew testDebugUnitTest 2>&1 | tee ../gradle-tests.log
 
       - name: Assemble debug APK
-        run: ./gradlew :app:assembleDebug --stacktrace
+        id: assemble
+        run: |
+          set -o pipefail
+          ./gradlew :app:assembleDebug 2>&1 | tee ../gradle-assemble.log
+
+      # Gradle's failure output buries compiler diagnostics under a long stack trace.
+      # This surfaces just the actionable lines so a failed run is readable at a glance.
+      - name: Compiler diagnostics
+        if: failure()
+        run: |
+          echo "::group::Kotlin/Java compiler errors"
+          grep -hE "^e: |error:|Unresolved reference|Caused by:" ../gradle-*.log \
+            | sed 's|file:///home/runner/work/davids-fit-restaurant/davids-fit-restaurant/||' \
+            | sort -u | head -100
+          echo "::endgroup::"
 
       - name: Upload APK
         uses: actions/upload-artifact@v4
