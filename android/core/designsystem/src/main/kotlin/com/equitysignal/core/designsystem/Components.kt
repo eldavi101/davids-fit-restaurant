@@ -227,12 +227,20 @@ fun StatTile(
     }
 }
 
+/**
+ * A label/value row in a metrics panel.
+ *
+ * `valueColor` deliberately precedes `modifier`, breaking the usual Compose ordering.
+ * Colour is the meaningful third argument here — gain green, loss red — and every one of
+ * this component's call sites passes one while none passes a modifier. Putting `modifier`
+ * third would make the natural positional call a type error.
+ */
 @Composable
 fun MetricRow(
     label: String,
     value: String,
-    modifier: Modifier = Modifier,
     valueColor: Color = FinancialColors.OnSurface,
+    modifier: Modifier = Modifier,
 ) {
     Row(
         modifier = modifier.fillMaxWidth().padding(vertical = 5.dp),
