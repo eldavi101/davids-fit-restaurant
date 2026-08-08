@@ -81,8 +81,13 @@ class AlertsViewModelTest {
             assertEquals(2, (awaitItem() as AlertsUiState.Ready).alerts.size)
 
             model.selectTab(AlertsTab.CLOSED)
-            val closed = awaitItem() as AlertsUiState.Ready
-            assertEquals(AlertsTab.CLOSED, closed.tab)
+            // The refresh started in init also emits, so wait for the tab to change rather
+            // than assuming which emission arrives next.
+            var closed = awaitItem() as AlertsUiState.Ready
+            while (closed.tab != AlertsTab.CLOSED) closed = awaitItem() as AlertsUiState.Ready
+
+            // Tab and list always come from the same emission, so this can never observe
+            // the CLOSED tab holding the previous tab's alerts.
             assertEquals(listOf("done"), closed.alerts.map { it.alertUid })
             cancelAndIgnoreRemainingEvents()
         }

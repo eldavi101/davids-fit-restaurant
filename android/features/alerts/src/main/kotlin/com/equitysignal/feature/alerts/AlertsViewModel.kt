@@ -46,25 +46,35 @@ class AlertsViewModel @Inject constructor(
     private val refreshing = MutableStateFlow(false)
     private val error = MutableStateFlow<String?>(null)
 
+    /**
+     * The tab is captured *inside* `flatMapLatest`, not combined alongside it.
+     *
+     * Feeding `selectedTab` into the combine as its own source made the tab and the list
+     * two independent inputs, so a tab switch produced a transient state pairing the new
+     * tab with the previous tab's alerts — the CLOSED tab briefly showing open trades.
+     * Deriving both from one emission makes that state unrepresentable.
+     */
     @OptIn(ExperimentalCoroutinesApi::class)
     val uiState: StateFlow<AlertsUiState> =
-        combine(
-            selectedTab.flatMapLatest { tab -> observeAlerts(tab) },
-            selectedTab,
-            observeUnreadCount(),
-            refreshing,
-            error,
-        ) { alerts, tab, unread, isRefreshing, errorMessage ->
-            AlertsUiState.Ready(
-                tab = tab,
-                alerts = alerts,
-                unreadCount = unread,
-                lastUpdatedUtc = alerts.maxOfOrNull { it.fetchedAtUtc },
-                isRefreshing = isRefreshing,
-                // The error sits *beside* the cached list, never in place of it: an alert
-                // the user already has must stay readable when the network is down.
-                error = errorMessage,
-            )
+        selectedTab.flatMapLatest { tab ->
+            combine(
+                observeAlerts(tab),
+                observeUnreadCount(),
+                refreshing,
+                error,
+            ) { alerts, unread, isRefreshing, errorMessage ->
+                AlertsUiState.Ready(
+                    tab = tab,
+                    alerts = alerts,
+                    unreadCount = unread,
+                    lastUpdatedUtc = alerts.maxOfOrNull { it.fetchedAtUtc },
+                    isRefreshing = isRefreshing,
+                    // The error sits *beside* the cached list, never in place of it: an
+                    // alert the user already has must stay readable when the network is
+                    // down.
+                    error = errorMessage,
+                )
+            }
         }.stateIn(
             scope = viewModelScope,
             started = SharingStarted.WhileSubscribed(5_000),
